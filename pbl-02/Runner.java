@@ -23,102 +23,143 @@ class Runner {
         input.close();
     }
 
+    // quickSort(users, 0, players.size() - 1);
+
     /**
-     * The function `quickSort` implements the quicksort algorithm to sort an array
-     * of Player objects.
+     * The function `quickSort` recursively sorts an ArrayList of Player objects
+     * using the quicksort
+     * algorithm.
      * 
-     * @param arr  The `arr` parameter is an array of `Player` objects that you want
-     *             to sort using the
-     *             quickSort algorithm.
-     * @param low  The `low` parameter in the `quickSort` method represents the
-     *             index of the first
-     *             element in the array or subarray that you want to sort. It
-     *             indicates the starting point for the
-     *             sorting process within the array.
-     * @param high The `high` parameter in the `quickSort` method represents the
-     *             index of the last
-     *             element in the array or subarray that you want to sort. It
-     *             indicates the upper bound of the
-     *             array or subarray that needs to be sorted.
+     * @param players An ArrayList of Player objects that you want to sort using the
+     *                quickSort
+     *                algorithm.
+     * @param low     The `low` parameter represents the lowest index of the
+     *                subarray to be sorted in the
+     *                `players` ArrayList.
+     * @param high    The `high` parameter in the `quickSort` method represents the
+     *                index of the highest
+     *                element in the sublist of `players` that we want to sort. It
+     *                is used to determine the range of
+     *                elements that need to be sorted within the `players` list.
      */
-    public static void quickSort(Player[] arr, int low, int high) {
+    public static void quickSort(ArrayList<Player> players, int low, int high) {
         if (low < high) {
-            int pivot = partition(arr, low, high);
-            quickSort(arr, low, pivot - 1);
-            quickSort(arr, pivot + 1, high);
+            int pivotIndex = partition(players, low, high);
+            quickSort(players, low, pivotIndex - 1);
+            quickSort(players, pivotIndex + 1, high);
         }
     }
 
     /**
-     * The partition function takes an array of Player objects, selects a pivot
+     * The partition function takes an ArrayList of Player objects, selects a pivot
      * element based on
-     * points, and rearranges the elements such that elements with higher points are
-     * placed before the
-     * pivot.
+     * points, and rearranges the elements such that all elements greater than or
+     * equal to the pivot
+     * are on the right side and all elements less than the pivot are on the left
+     * side.
      * 
-     * @param arr  An array of Player objects that you want to partition based on
-     *             their points.
-     * @param low  The `low` parameter represents the starting index of the array
-     *             `arr` for the
-     *             partitioning process. It indicates the lower bound of the
-     *             subarray that needs to be partitioned.
-     * @param high The `high` parameter in the `partition` method represents the
-     *             index of the last
-     *             element in the array or subarray that you want to partition. It
-     *             indicates the upper bound of the
-     *             range within which the partitioning should occur.
-     * @return The partition method is returning the index of the pivot element
-     *         after rearranging the
-     *         array such that all elements with points greater than the pivot are
-     *         on the left side and all
-     *         elements with points less than the pivot are on the right side.
+     * @param players An ArrayList of Player objects representing a list of players.
+     * @param low     The `low` parameter represents the starting index of the
+     *                subarray within the
+     *                `players` ArrayList that needs to be partitioned.
+     * @param high    The `high` parameter in the `partition` method represents the
+     *                index of the last
+     *                element in the subarray that needs to be partitioned. It
+     *                indicates the upper bound of the array
+     *                or subarray being considered for partitioning.
+     * @return The partition method returns the index of the pivot element after
+     *         rearranging the
+     *         elements in the ArrayList such that all elements with points greater
+     *         than or equal to the pivot
+     *         element are on its left, and all elements with points less than the
+     *         pivot element are on its
+     *         right.
      */
-    public static int partition(Player[] arr, int low, int high) {
-        int pivot = arr[high].points;
+    public static int partition(ArrayList<Player> players, int low, int high) {
+        int pivot = players.get(high).points;
         int i = low - 1;
 
-        for (int j = low; i <= high; j++) {
-            if (arr[j].points > pivot) {
+        for (int j = low; j < high; j++) {
+            if (players.get(j).points >= pivot) {
                 i++;
-                Player tmp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = tmp;
+                swap(players, i, j);
             }
         }
-        Player tmp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = tmp;
 
+        swap(players, i + 1, high);
         return i + 1;
     }
 
     /**
-     * The `listPlayers` function sorts and displays player information stored in an array.
+     * The `swap` function takes an ArrayList of Player objects and two indices, and
+     * swaps the elements
+     * at those indices in the ArrayList.
+     * 
+     * @param players An ArrayList of Player objects.
+     * @param i       The parameter `i` in the `swap` method represents the index of
+     *                the first player in the
+     *                `players` ArrayList that you want to swap with another player.
+     * @param j       The parameter `j` in the `swap` method represents the index of
+     *                the second player in the
+     *                `ArrayList<Player> players` that you want to swap with the
+     *                player at index `i`.
      */
-    static void listPlayers() {
-        Player[] data = new Player[users.size()];
-        data = users.toArray(data);
+    public static void swap(ArrayList<Player> players, int i, int j) {
+        Player temp = players.get(i);
+        players.set(i, players.get(j));
+        players.set(j, temp);
+    }
 
-        quickSort(data, 0, users.size() - 1);
+    /**
+     * The `listPlayers` function sorts a list of players and then displays their
+     * ID, username, and
+     * points to the user.
+     */
+    public static void listPlayers() {
+        ArrayList<Player> data = users;
 
-        for (Player i : users) {
-            System.out.println(i.getId());
-            System.out.println(i.username);
-            System.out.println(i.points);
+        // sorts the data before displaying it to the user
+        quickSort(data, 0, data.size() - 1);
+
+        for (Player i : data) {
+            System.out.printf("[>]User ID: %s\n", i.getId());
+            System.out.printf("\t[>]Username: %s\n", i.username);
+            System.out.printf("\t[>]Points: %s\n", i.points);
             System.out.println(" ");
         }
     }
 
-    // The `processInput` method in the `Runner` class takes two parameters:
-    // `command` which represents
-    // the user input command and `input` which is a `Scanner` object for reading
-    // user input.
+    /**
+     * The function `processInput` takes a command and user input, then performs
+     * various actions based
+     * on the command such as adding a new player, listing players, updating player
+     * points, or quitting
+     * the program.
+     * 
+     * @param command The `command` parameter in the `processInput` method is a
+     *                string that represents
+     *                the user's input command. The method processes different
+     *                commands based on the user's input,
+     *                such as creating a new player, listing players, updating
+     *                player points, or quitting the program.
+     *                The commands are represented by single
+     * @param input   The `input` parameter in the `processInput` method is of type
+     *                `Scanner`. This
+     *                parameter is used to read input from the user, such as player
+     *                names, user IDs, and points to
+     *                assign to users. The `Scanner` class in Java is used for
+     *                obtaining input of primitive types like
+     */
     static void processInput(String command, Scanner input) {
+
         if (command.strip() == null) {
             System.out.println("[!]Write a valid string!!!!");
             return;
         }
         clearScreen();
+
+        // logic for processing menu commands
+        // not the best code but it works ㄟ( ▔, ▔ )ㄏ
         switch (command.toUpperCase()) {
             case "N": {
                 System.out.println("[+]Insert player's name");
@@ -128,14 +169,9 @@ class Runner {
                     Player thispl = new Player(newUsername);
                     users.add(thispl);
 
-                    System.out.println(
-                            String.format("[+]Added player %s...\nPoints: %d\n", thispl.username, thispl.points));
+                    System.out.printf("[+]Added player %s...\nPoints: %d\n", thispl.username, thispl.points);
 
-                    for (Player pl : users) {
-                        System.out.println(
-                                String.format("[Player %d] - %s | Points: %d\n", pl.getId(), pl.username,
-                                        pl.points));
-                    }
+                    listPlayers();
 
                     return;
 
@@ -161,19 +197,17 @@ class Runner {
                     }
                 }
                 if (selected != null) {
-                    System.out.println(
-                            String.format("[Selected] ->[UserID %d] - %s | Points: %d\n", selected.getId(),
-                                    selected.username,
-                                    selected.points));
+                    System.out.printf("[Selected] ->[UserID %d] - %s | Points: %d\n", selected.getId(),
+                            selected.username,
+                            selected.points);
                 }
                 System.out.println("[+]Select new amount of point to assign to user");
                 userInput = input.nextInt();
                 ArrayList<Integer> h = selected.appendHistory(userInput);
                 selected.points = userInput;
-                System.out.println(
-                        String.format("[User %d 's history of points] \n", selected.getId()));
+                System.out.printf("[User %d 's history of points] \n", selected.getId());
                 for (Integer i : h) {
-                    System.out.println(String.format("[Score]: %d", i));
+                    System.out.printf("[Score]: %d", i);
                 }
                 break;
             }
